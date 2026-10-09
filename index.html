@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Biblioteca Educacional Bicudo</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <style>
+    /* ========== RESET + VARIÁVEIS ========== */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --green-900: #0e2a1e;
+      --green-700: #1d4a34;
+      --green-600: #2f6b4b;
+      --gold: #b8893e;
+      --gold-light: #d4aa62;
+      --cream: #f3eee2;
+      --paper: #f8f4ea;
+      --line: #ddd5c2;
+      --text: #1f2a24;
+      --muted: #7b7869;
+      --serif: "Source Serif 4", Georgia, serif;
+      --mono: "IBM Plex Mono", "Courier New", monospace;
+    }
+
+    body {
+      font-family: var(--serif);
+      background: var(--cream);
+      color: var(--text);
+    }
+
+    a { text-decoration: none; color: inherit; }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+    ul { list-style: none; }
+
+    /* ========== LAYOUT ========== */
+    .app {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      min-height: 100vh;
+    }
+
+    /* ========== SIDEBAR ========== */
+    .sidebar {
+      background: var(--green-900);
+      color: #e9e3d2;
+      padding: 22px 14px;
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 6px 18px;
+      border-bottom: 1px solid rgba(255, 255, 255, .12);
+    }
+
+    .brand-logo {
+      width: 54px;
+      height: 54px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      border: 2px solid var(--gold-light);
+      outline: 1px solid rgba(212, 170, 98, .5);
+      outline-offset: 3px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--gold-light);
+      line-height: 1;
+    }
+    .brand-logo small { font-size: 5px; letter-spacing: 1px; margin-top: 2px; }
+
+    .brand-text strong { display: block; font-size: 15px; letter-spacing: 2px; font-weight: 600; }
+    .brand-text span { font-size: 9px; letter-spacing: 1.5px; color: #b9b39f; }
+
+    .menu { margin-top: 10px; flex: 1; }
+
+    .menu-title {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 1.5px;
+      color: #9fa892;
+      margin: 20px 6px 8px;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 14px;
+      border-radius: 6px;
+      font-size: 14px;
+      color: #e9e3d2;
+      border: 1px solid transparent;
+      transition: background .2s;
+    }
+    .menu-item i { font-size: 17px; width: 20px; }
+    .menu-item span { flex: 1; }
+    .menu-item:hover { background: rgba(255, 255, 255, .07); }
+    .menu-item.active {
+      background: linear-gradient(90deg, #7d6330, #8a6d37);
+      border-color: var(--gold);
+      color: #fff;
+    }
+
+    .badge {
+      font-style: normal;
+      font-family: var(--mono);
+      font-size: 11px;
+      background: var(--green-700);
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+    .badge-gold {
+      background: var(--gold);
+      color: #fff;
+      border-radius: 4px;
+      font-size: 10px;
+      padding: 3px 8px;
+    }
+
+    .sidebar-footer {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 6px 0;
+      border-top: 1px solid rgba(255, 255, 255, .12);
+      font-family: var(--mono);
+      font-size: 9px;
+      color: #b9b39f;
+      line-height: 1.5;
+    }
+    .sidebar-footer i { font-size: 22px; color: var(--gold-light); }
+
+    /* ========== TOPBAR ========== */
+    .main { min-width: 0; }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 24px;
+      background: var(--paper);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .topbar-left { display: flex; align-items: center; gap: 18px; }
+    .topbar-left h1 { font-size: 20px; font-weight: 600; }
+    .topbar-left p { font-size: 12px; color: var(--muted); }
+
+    .icon-btn { font-size: 22px; color: var(--text); position: relative; }
+    .bell .dot {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #d9412b;
+    }
+
+    .topbar-right { display: flex; align-items: center; gap: 24px; }
+
+    .user { display: flex; align-items: center; gap: 10px; }
+    .user strong { display: block; font-size: 13px; font-weight: 600; }
+    .user span { font-size: 10px; color: var(--muted); }
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #9a9a96;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .btn-admin {
+      background: var(--gold);
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background .2s;
+    }
+    .btn-admin:hover { background: #a37832; }
+
+    /* ========== CONTEÚDO ========== */
+    .content { padding: 16px 22px 30px; }
+
+    /* ---- Hero ---- */
+    .hero {
+      position: relative;
+      border-radius: 8px;
+      padding: 38px 28px 30px;
+      color: #fff;
+      overflow: hidden;
+      background:
+        linear-gradient(90deg, rgba(14, 42, 30, .97) 0%, rgba(14, 42, 30, .88) 42%, rgba(14, 42, 30, .15) 100%),
+        url("img/estante.jpg") center / cover no-repeat,
+        repeating-linear-gradient(90deg,
+          #5a3a1e 0 6px, #3b2412 6px 11px, #7a5a2e 11px 15px,
+          #2a1a0e 15px 21px, #6b4a26 21px 25px, #4a2f18 25px 32px),
+        var(--green-900);
+    }
+    .hero-tag {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      color: var(--gold-light);
+    }
+    .hero h2 { font-size: 28px; font-weight: 600; line-height: 1.2; margin: 12px 0 10px; }
+    .hero p { font-size: 13px; color: #d7d3c3; margin-bottom: 20px; }
+
+    .search { display: flex; gap: 8px; max-width: 420px; }
+    .search input {
+      flex: 1;
+      padding: 12px 14px;
+      border: none;
+      border-radius: 4px;
+      font-family: var(--serif);
+      font-size: 13px;
+      outline: none;
+      background: #fff;
+      color: var(--text);
+    }
+    .search button {
+      background: var(--gold);
+      color: #fff;
+      padding: 0 18px;
+      border-radius: 4px;
+      font-size: 13px;
+      border: 1px solid var(--gold-light);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .search button:hover { background: #a37832; }
+
+    /* ---- Estatísticas ---- */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 14px 0;
+    }
+    .stat {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-left: 3px solid var(--green-600);
+      border-radius: 4px;
+      padding: 14px 16px;
+    }
+    .stat.stat-gold { border-left-color: var(--gold); }
+    .stat span { font-size: 13px; }
+    .stat strong { display: block; font-size: 30px; font-weight: 600; margin: 2px 0; }
+    .stat small { font-family: var(--mono); font-size: 10px; color: var(--muted); }
+
+    /* ---- Painéis ---- */
+    .panels {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .panel {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+    }
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+    }
+    .panel-head h3 { font-size: 15px; font-weight: 600; margin-top: 3px; }
+
+    .eyebrow {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 1.2px;
+      color: var(--muted);
+    }
+    .pill {
+      font-family: var(--mono);
+      font-size: 10px;
+      background: #dcd5c0;
+      padding: 3px 10px;
+      border-radius: 10px;
+    }
+
+    /* ---- Empréstimos ---- */
+    .loans { padding: 6px 16px 10px; }
+    .loans li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .loans li:last-child { border-bottom: none; }
+    .loans strong { display: block; font-size: 13px; font-weight: 600; }
+    .loans small { font-family: var(--mono); font-size: 9.5px; color: var(--muted); }
+    .book-icon {
+      width: 24px;
+      height: 28px;
+      background: var(--green-900);
+      color: #e9e3d2;
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
+    /* ---- Calendário ---- */
+    .cal-nav { display: flex; align-items: center; gap: 6px; }
+    .cal-nav span { font-family: var(--mono); font-size: 9px; color: var(--muted); }
+    .cal-nav button {
+      width: 18px;
+      height: 18px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      font-size: 9px;
+      color: var(--text);
+    }
+
+    .calendar {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      row-gap: 8px;
+      padding: 14px 18px 6px;
+      text-align: center;
+    }
+    .wd { font-family: var(--mono); font-size: 8px; color: var(--muted); margin-bottom: 4px; }
+    .day {
+      position: relative;
+      width: 26px;
+      height: 26px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      border-radius: 50%;
+    }
+    .day.today { background: var(--green-900); color: #fff; font-weight: 600; }
+    .day.withdraw::after,
+    .day.deliver::after {
+      content: "";
+      position: absolute;
+      bottom: -2px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+    }
+    .day.withdraw::after { background: var(--gold); }
+    .day.deliver::after { background: var(--green-600); }
+
+    .legend {
+      display: flex;
+      gap: 18px;
+      margin: 10px 18px 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--muted);
+    }
+    .legend span { display: flex; align-items: center; gap: 6px; }
+    .lg { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+    .lg.gold { background: var(--gold); }
+    .lg.green { background: var(--green-600); }
+    .lg.dark { background: var(--green-900); }
+
+    /* ---- Ranking ---- */
+    .ranking { padding: 10px 16px 14px; }
+    .ranking li {
+      display: grid;
+      grid-template-columns: 26px 1fr 28px;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 0;
+    }
+    .ranking strong { font-size: 13px; font-weight: 600; }
+    .pos { font-family: var(--mono); font-size: 10px; color: var(--gold); }
+    .count { font-family: var(--mono); font-size: 10px; color: var(--muted); text-align: right; }
+    .bar {
+      height: 4px;
+      background: #e6dfcc;
+      border-radius: 4px;
+      margin-top: 6px;
+      overflow: hidden;
+    }
+    .bar i { display: block; height: 100%; background: var(--gold-light); border-radius: 4px; }
+
+    /* ========== RESPONSIVO ========== */
+    @media (max-width: 1200px) {
+      .panels { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 900px) {
+      .app { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .stats, .panels { grid-template-columns: 1fr; }
+      .topbar { flex-wrap: wrap; gap: 12px; }
+      .user { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-logo">MB<small>BIBLIOTECA</small></div>
+        <div class="brand-text">
+          <strong>BIBLIOTECA</strong>
+          <span>EDUCACIONAL BICUDO</span>
+        </div>
+      </div>
+
+      <nav class="menu">
+        <p class="menu-title">VISÃO GERAL</p>
+        <a href="#" class="menu-item active"><i class="bi bi-house-door"></i><span>Home</span></a>
+
+        <p class="menu-title">ACERVO</p>
+        <a href="#" class="menu-item"><i class="bi bi-journal-bookmark"></i><span>Livros</span><em class="badge">8</em></a>
+
+        <p class="menu-title">CIRCULAÇÃO</p>
+        <a href="#" class="menu-item"><i class="bi bi-person-lines-fill"></i><span>Empréstimos</span><em class="badge">4</em></a>
+        <a href="#" class="menu-item"><i class="bi bi-clock"></i><span>Histórico</span></a>
+
+        <p class="menu-title">PREPARATÓRIO</p>
+        <a href="#" class="menu-item"><i class="bi bi-mortarboard-fill"></i><span>Vestibular</span></a>
+
+        <p class="menu-title">ADMINISTRAÇÃO</p>
+        <a href="#" class="menu-item"><i class="bi bi-person"></i><span>Cadastro</span><em class="badge badge-gold">Admin</em></a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <i class="bi bi-book-half"></i>
+        <span>Sistema de Gestão<br>Biblioteca Bicudo</span>
+      </div>
+    </aside>
+
+    <!-- CONTEÚDO -->
+    <div class="main">
+
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="icon-btn" aria-label="Menu"><i class="bi bi-list"></i></button>
+          <div>
+            <h1>Home</h1>
+            <p>Painel geral do acervo — atualizado em tempo real</p>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <button class="icon-btn bell" aria-label="Notificações">
+            <i class="bi bi-bell"></i><span class="dot"></span>
+          </button>
+          <div class="user">
+            <div class="avatar"><i class="bi bi-person-fill"></i></div>
+            <div>
+              <strong>Visitante</strong>
+              <span>Acesso visitante</span>
+            </div>
+          </div>
+          <button class="btn-admin"><i class="bi bi-box-arrow-in-right"></i> Login administrador</button>
+        </div>
+      </header>
+
+      <main class="content">
+
+        <!-- HERO -->
+        <section class="hero">
+          <span class="hero-tag">CONSULTA ABERTA AO ACERVO</span>
+          <h2>Conhecimento é sempre um bom<br>lugar para recomeçar.</h2>
+          <p>Explore o acervo da Biblioteca Bicudo e encontre sua próxima leitura.</p>
+
+          <form class="search" onsubmit="return false">
+            <input type="text" placeholder="Buscar livro, autor, ISBN ou usuário...">
+            <button type="submit"><i class="bi bi-search"></i> Pesquisar</button>
+          </form>
+        </section>
+
+        <!-- ESTATÍSTICAS -->
+        <section class="stats">
+          <article class="stat">
+            <span>Títulos cadastrados</span>
+            <strong>15</strong>
+            <small>Livros distintos no acervo</small>
+          </article>
+          <article class="stat stat-gold">
+            <span>Disponíveis agora</span>
+            <strong>8</strong>
+            <small>Prontos para empréstimo</small>
+          </article>
+          <article class="stat">
+            <span>Empréstimos ativos</span>
+            <strong>7</strong>
+            <small>Em circulação neste momento</small>
+          </article>
+        </section>
+
+        <!-- PAINÉIS -->
+        <section class="panels">
+
+          <!-- Em circulação -->
+          <article class="panel">
+            <header class="panel-head">
+              <div>
+                <span class="eyebrow">VISÃO OPERACIONAL</span>
+                <h3>Em circulação agora</h3>
+              </div>
+              <span class="pill">7 ativos</span>
+            </header>
+
+            <ul class="loans">
+              <li>
+                <div class="book-icon"><i class="bi bi-book"></i></div>
+                <div><strong>Memórias Póstumas de Brás Cubas</strong><small>9º B · retirado em 13/09/2026</small></div>
+              </li>
+              <li>
+                <div class="book-icon"><i class="bi bi-book"></i></div>
+                <div><strong>Romanceiro da Inconfidência</strong><small>9º C · retirado em 12/09/2026</small></div>
+              </li>
+              <li>
+                <div class="book-icon"><i class="bi bi-book"></i></div>
+                <div><strong>Dom Casmurro</strong><small>9º A · retirado em 11/09/2026</small></div>
+              </li>
+              <li>
+                <div class="book-icon"><i class="bi bi-book"></i></div>
+                <div><strong>Vidas Secas</strong><small>8º A · retirado em 10/09/2026</small></div>
+              </li>
+              <li>
+                <div class="book-icon"><i class="bi bi-book"></i></div>
+                <div><strong>Ensaio sobre a Cegueira</strong><small>8º B · retirado em 09/09/2026</small></div>
+              </li>
+            </ul>
+          </article>
+
+          <!-- Calendário -->
+          <article class="panel">
+            <header class="panel-head">
+              <div>
+                <span class="eyebrow">AGENDA DE RETIRADAS</span>
+                <h3>Calendário da biblioteca</h3>
+              </div>
+              <div class="cal-nav">
+                <button aria-label="Mês anterior"><i class="bi bi-chevron-left"></i></button>
+                <span>Outubro de 2026</span>
+                <button aria-label="Próximo mês"><i class="bi bi-chevron-right"></i></button>
+              </div>
+            </header>
+
+            <div class="calendar">
+              <span class="wd">DOM</span><span class="wd">SEG</span><span class="wd">TER</span>
+              <span class="wd">QUA</span><span class="wd">QUI</span><span class="wd">SEX</span><span class="wd">SÁB</span>
+
+              <span></span><span></span><span></span><span></span>
+              <span class="day withdraw">1</span><span class="day">2</span><span class="day">3</span>
+
+              <span class="day">4</span><span class="day">5</span><span class="day today">6</span><span class="day">7</span>
+              <span class="day">8</span><span class="day">9</span><span class="day">10</span>
+
+              <span class="day">11</span><span class="day">12</span><span class="day withdraw">13</span><span class="day">14</span>
+              <span class="day deliver">15</span><span class="day">16</span><span class="day">17</span>
+
+              <span class="day">18</span><span class="day">19</span><span class="day withdraw">20</span><span class="day">21</span>
+              <span class="day">22</span><span class="day">23</span><span class="day">24</span>
+
+              <span class="day">25</span><span class="day">26</span><span class="day withdraw">27</span><span class="day">28</span>
+              <span class="day deliver">29</span><span class="day">30</span><span class="day">31</span>
+            </div>
+
+            <footer class="legend">
+              <span><i class="lg gold"></i> Retirada</span>
+              <span><i class="lg green"></i> Entrega</span>
+              <span><i class="lg dark"></i> Hoje</span>
+            </footer>
+          </article>
+
+          <!-- Ranking -->
+          <article class="panel">
+            <header class="panel-head">
+              <div>
+                <span class="eyebrow">ACERVO EM MOVIMENTO</span>
+                <h3>Livros mais emprestados</h3>
+              </div>
+              <span class="eyebrow">RANKING</span>
+            </header>
+
+            <ul class="ranking">
+              <li>
+                <span class="pos">01</span>
+                <div><strong>Dom Casmurro</strong><div class="bar"><i style="width:100%"></i></div></div>
+                <span class="count">1×</span>
+              </li>
+              <li>
+                <span class="pos">02</span>
+                <div><strong>Vidas Secas</strong><div class="bar"><i style="width:100%"></i></div></div>
+                <span class="count">1×</span>
+              </li>
+              <li>
+                <span class="pos">03</span>
+                <div><strong>Ensaio sobre a Cegueira</strong><div class="bar"><i style="width:100%"></i></div></div>
+                <span class="count">1×</span>
+              </li>
+              <li>
+                <span class="pos">04</span>
+                <div><strong>1984</strong><div class="bar"><i style="width:70%"></i></div></div>
+                <span class="count">1×</span>
+              </li>
+              <li>
+                <span class="pos">05</span>
+                <div><strong>O Cortiço</strong><div class="bar"><i style="width:55%"></i></div></div>
+                <span class="count">1×</span>
+              </li>
+            </ul>
+          </article>
+
+        </section>
+      </main>
+    </div>
+  </div>
+</body>
+</html>
